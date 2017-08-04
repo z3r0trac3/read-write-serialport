@@ -52,6 +52,7 @@ namespace EdiSerialComms
             vbat1v1 = vbat1v1 * 100.2333;
             int vbat1v2 = int.Parse(match.Groups["bat1v2"].Value);
             //vbat1v2 = vbat1v1 * 2; asdasd1231231231
+            // nu stiu aici
             int vbat2v1 = int.Parse(match.Groups["bat2v1"].Value);
             int vbat2v2 = int.Parse(match.Groups["bat2v2"].Value);
 
