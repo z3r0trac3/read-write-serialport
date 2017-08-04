@@ -43,23 +43,31 @@ namespace EdiSerialComms
         }
 
         private void SetText(string text) {
-            this.rtbIncoming.Text += text;
+            // this.rtbIncoming.Text += text;
 
-            Regex pattern = new Regex(@"bat1:(?<bat1v1>\d+),(?<bat1v2>\d+);bat2:(?<bat2v1>\d+),(?<bat2v2>\d+)");
+            // Regex pattern = new Regex(@"bat1:(?<bat1v>\d+),(-?\d*\.{0,1}<bat1a>\d+);bat2:(?<bat2v>\d+),(?<bat2a>\d+);bat3:(?<bat3v>\d+),(?<bat3a>\d+);bat4:(?<bat4v>\d+),(?<bat4a>\d+)");
+            Regex pattern = new Regex(@"bat1:(?<bat1v>\d+),(?<bat1a>\d+");
+
             Match match = pattern.Match(text);
 
-            double vbat1v1 = int.Parse(match.Groups["bat1v1"].Value);
-            vbat1v1 = vbat1v1 * 100.2333;
-            int vbat1v2 = int.Parse(match.Groups["bat1v2"].Value);
-            //vbat1v2 = vbat1v1 * 2; asdasd1231231231
-            // nu stiu aici
-            int vbat2v1 = int.Parse(match.Groups["bat2v1"].Value);
-            int vbat2v2 = int.Parse(match.Groups["bat2v2"].Value);
+            int vbat1v = int.Parse(match.Groups["bat1v"].Value);
+            var vbat1a = int.Parse(match.Groups["bat1a"].Value); 
 
-            label3.Text = vbat1v1.ToString();
-            label4.Text = vbat1v2.ToString();
-            label5.Text = vbat2v1.ToString();
-            label6.Text = vbat2v2.ToString();
+
+            int vbat2v = int.Parse(match.Groups["bat2v"].Value);
+            int vbat2a = int.Parse(match.Groups["bat2a"].Value);
+            int vbat3v = int.Parse(match.Groups["bat3v"].Value);
+            int vbat3a = int.Parse(match.Groups["bat3a"].Value);
+            int vbat4v = int.Parse(match.Groups["bat4v"].Value);
+            int vbat4a = int.Parse(match.Groups["bat4a"].Value);
+            //float newValue = Convert.ToSingle(value);
+
+            String vbattest = vbat1v.ToString("F");
+            vbattest += "V";
+            label3.Text = vbattest;
+            label4.Text = vbat1a.ToString();
+            label5.Text = vbat2v.ToString();
+            label6.Text = vbat2a.ToString();
 
 
 
@@ -103,7 +111,7 @@ namespace EdiSerialComms
         private void rtbOutgoing_KeyPress(object sender, KeyPressEventArgs e) {
             if (e.KeyChar == (char)13) { // enter 
                 ComPort.Write("\r\n");
-                rtbOutgoing.Text = "";
+                //rtbOutgoing.Text = "";
             } else if (e.KeyChar < 32 || e.KeyChar > 126) {
                 e.Handled = true; // ignores anything else outside printable ASCII range  
             } else {
@@ -151,31 +159,32 @@ namespace EdiSerialComms
             cboBaudRate.Text = cboBaudRate.Items[0].ToString();
 //Data Bits
             // cboDataBits.Items.Add(7);
-            cboDataBits.Items.Add(8);
-            cboDataBits.Text = cboDataBits.Items[0].ToString();
+        //    cboDataBits.Items.Add(8);
+        //    cboDataBits.Text = cboDataBits.Items[0].ToString();
 //Stop Bits
-            cboStopBits.Items.Add("One");
+           // cboStopBits.Items.Add("One");
             //cboStopBits.Items.Add("OnePointFive");
             //cboStopBits.Items.Add("Two");
-            cboStopBits.Text = cboStopBits.Items[0].ToString();
+         //   cboStopBits.Text = cboStopBits.Items[0].ToString();
 //Parity 
-            cboParity.Items.Add("None");
+         //   cboParity.Items.Add("None");
             //boParity.Items.Add("Even");
             //cboParity.Items.Add("Mark");
             //cboParity.Items.Add("Odd");
             //cboParity.Items.Add("Space");
-            cboParity.Text = cboParity.Items[0].ToString();
+         //   cboParity.Text = cboParity.Items[0].ToString();
 //Handshake
-            cboHandShaking.Items.Add("None");
+         //   cboHandShaking.Items.Add("None");
             //cboHandShaking.Items.Add("XOnXOff");
             //cboHandShaking.Items.Add("RequestToSend");
             //cboHandShaking.Items.Add("RequestToSendXOnXOff");
-            cboHandShaking.Text = cboHandShaking.Items[0].ToString();
+        //    cboHandShaking.Text = cboHandShaking.Items[0].ToString();
 
             // enable buttons
             btnPortState.Enabled = true;
             btnHello.Enabled = true;
             btnHyperTerm.Enabled = true;
+            Discharge.Enabled = true;
             // set label
             labelstatus.Text = "Config settings and press 'Open' button!";
 
@@ -188,10 +197,10 @@ namespace EdiSerialComms
                 //MessageBox.Show("aici ?");
                 ComPort.PortName = Convert.ToString(cboPorts.Text);
                 ComPort.BaudRate = Convert.ToInt32(cboBaudRate.Text);
-                ComPort.DataBits = Convert.ToInt16(cboDataBits.Text);
-                ComPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), cboStopBits.Text);
-                ComPort.Handshake = (Handshake)Enum.Parse(typeof(Handshake), cboHandShaking.Text);
-                ComPort.Parity = (Parity)Enum.Parse(typeof(Parity), cboParity.Text);
+              //  ComPort.DataBits = Convert.ToInt16(cboDataBits.Text);
+             //   ComPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), cboStopBits.Text);
+             //   ComPort.Handshake = (Handshake)Enum.Parse(typeof(Handshake), cboHandShaking.Text);
+              //  ComPort.Parity = (Parity)Enum.Parse(typeof(Parity), cboParity.Text);
                 ComPort.Open();
                 labelstatus.Text = "Connected!";
                 btnPortState.Text = "Closed";
@@ -227,7 +236,77 @@ namespace EdiSerialComms
 
         private void btnHello_Click_1(object sender, EventArgs e)
         {
-            ComPort.Write("Hello World!");
+            ComPort.Write("z");
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void rtbIncoming_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cboParity_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ComPort.Write("y");
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            ComPort.Write("y");
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            ComPort.Write("y");
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            ComPort.Write("y");
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            ComPort.Write("y");
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            ComPort.Write("y");
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            ComPort.Write("y");
         }
     }
 
